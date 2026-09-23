@@ -26,3 +26,23 @@ torch.manual_seed(SEED)
 np.random.seed(SEED)
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print("device:", device)
+
+
+###### Since data is avilable at Kaggle, it was fetched and ran directly at kaggle using pickl
+
+#### This part checks for the existence of the data and then print the found path on consol
+pkl_candidates = glob.glob(os.path.join(DATA_DIR, "**", "*.pkl"), recursive=True)
+print(f"Found {len(pkl_candidates)} .pkl file(s) under {DATA_DIR}:")
+for p in pkl_candidates:
+    print(" ", p)
+ 
+assert len(pkl_candidates) > 0, (
+    f"No .pkl file found under {DATA_DIR}. "
+    f"Contents of that folder: {os.listdir(DATA_DIR) if os.path.isdir(DATA_DIR) else 'PATH DOES NOT EXIST'}"
+)
+ 
+raw = pd.read_pickle(pkl_candidates[0])
+print("\nShape:", raw.shape)
+print("Columns:", list(raw.columns))
+raw.head()
+
