@@ -93,10 +93,8 @@ plt.show()
 
 # ## 4. Resize every wafer map to a fixed size
 #
-# Wafer maps come in different sizes, but a CNN needs a fixed input shape.
-# Nearest-neighbor resizing keeps the pixel values exactly {0, 1, 2} —
-# a normal (interpolated) resize would invent fractional values in
-# between, which don't correspond to a real die state.
+# Wafer maps come in different sizes, but a CNN needs a fixed input shape. using Nearest-neighbor resizing keeps the pixel values exactly {0, 1, 2}. 
+# Becausee a normal (interpolated) resize would invent fractional values in between, which don't correspond to a real die state.
  
 # %%
 def resize_wafer(wafer, size=IMG_SIZE):
@@ -111,4 +109,6 @@ X = X / 2.0  # {0, 1, 2} -> {0, 0.5, 1}
 y = labeled["failureType"].map(CLASS_TO_IDX).to_numpy()
  
 print("X shape:", X.shape, " y shape:", y.shape)
- 
+
+
+
