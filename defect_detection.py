@@ -76,4 +76,14 @@ plt.savefig("01_class_distribution.png", dpi=150)
 plt.show()
 
 
+# %% Visualizing each class which is shown in label 
 
+fig, axes = plt.subplots(3, 3, figsize=(9, 9))
+for ax, cls in zip(axes.flat, CLASSES):
+    example = labeled.loc[labeled["failureType"] == cls, "waferMap"].iloc[0]
+    ax.imshow(example, cmap="gray")
+    ax.set_title(cls)
+    ax.axis("off")
+plt.tight_layout()
+plt.savefig("02_example_per_class.png", dpi=150)
+plt.show()
