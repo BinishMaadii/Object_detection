@@ -46,3 +46,34 @@ print("\nShape:", raw.shape)
 print("Columns:", list(raw.columns))
 raw.head()
 
+
+##### Inspecting the raw data for labels
+
+def unwrap_label(value):
+    while isinstance(value, (list, np.ndarray)):
+        if len(value) == 0:
+            return None
+        value = value[0]
+    return value
+ 
+raw["failureType"] = raw["failureType"].apply(unwrap_label)
+ 
+print("Label counts (including unlabeled = NaN or not one of the 9 classes):")
+print(raw["failureType"].value_counts(dropna=False))
+ 
+# %%
+labeled = raw[raw["failureType"].isin(CLASSES)].reset_index(drop=True)
+print(f"\n{len(labeled)} of {len(raw)} wafers carry a usable label "
+      f"({len(labeled) / len(raw):.1%}).")
+ 
+fig, ax = plt.subplots(figsize=(8, 4))
+labeled["failureType"].value_counts().reindex(CLASSES).plot(kind="bar", ax=ax)
+ax.set_title("Labeled wafer maps per class")
+ax.set_ylabel("count")
+plt.xticks(rotation=45, ha="right")
+plt.tight_layout()
+plt.savefig("01_class_distribution.png", dpi=150)
+plt.show()
+
+
+
