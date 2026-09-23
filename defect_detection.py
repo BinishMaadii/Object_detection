@@ -87,3 +87,28 @@ for ax, cls in zip(axes.flat, CLASSES):
 plt.tight_layout()
 plt.savefig("02_example_per_class.png", dpi=150)
 plt.show()
+
+
+
+
+# ## 4. Resize every wafer map to a fixed size
+#
+# Wafer maps come in different sizes, but a CNN needs a fixed input shape.
+# Nearest-neighbor resizing keeps the pixel values exactly {0, 1, 2} —
+# a normal (interpolated) resize would invent fractional values in
+# between, which don't correspond to a real die state.
+ 
+# %%
+def resize_wafer(wafer, size=IMG_SIZE):
+    wafer = np.asarray(wafer)
+    h, w = wafer.shape
+    row_idx = np.clip((np.arange(size) * h / size).astype(int), 0, h - 1)
+    col_idx = np.clip((np.arange(size) * w / size).astype(int), 0, w - 1)
+    return wafer[np.ix_(row_idx, col_idx)]
+ 
+X = np.stack([resize_wafer(w) for w in labeled["waferMap"]]).astype(np.float32)
+X = X / 2.0  # {0, 1, 2} -> {0, 0.5, 1}
+y = labeled["failureType"].map(CLASS_TO_IDX).to_numpy()
+ 
+print("X shape:", X.shape, " y shape:", y.shape)
+ 
