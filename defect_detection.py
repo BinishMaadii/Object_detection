@@ -131,6 +131,47 @@ print(f"train: {len(y_train)}   val: {len(y_val)}   test: {len(y_test)}")
 
 
 
+# Diagnostic, not a fix: wafers are split individually here, but they  actually come in lots of up to 25. If the same lot shows up in both
+# train and test, those test wafers may share lot-level fab conditions with training examples the model has already seen, which can make test
+# performance look slightly better than it would on a genuinely unseen
+# lot. This just reports how much of that is happening; a stricter alternative would group-split by lotName instead of by wafer
+# (sklearn's GroupShuffleSplit), at the cost of losing exact stratification by class.
+
+
+
+#### Since wafers are made in lots, so this step needs contextual knowledge. This inspects how many lots are common in training and testing lots
+### output wwas Lots shared between train and test: 6789 of 10522 total lots (64.5%)
+
+lots = labeled["lotName"].to_numpy()
+train_lots, test_lots = set(lots[idx_train]), set(lots[idx_test])
+overlap = train_lots & test_lots
+print(f"Lots shared between train and test: {len(overlap)} of "
+      f"{len(train_lots | test_lots)} total lots "
+      f"({len(overlap) / len(train_lots | test_lots):.1%})")
+
+
+#### Since in this pipeline Pytorch is being used therefore, now the images in y, X are being transformed to pytorch using TensorDataset within a function to_loader
+### atfer this conversion, the shufllin is only maintained for test
+
+def to_loader(X, y, shuffle):
+    ds = TensorDataset(torch.from_numpy(X).unsqueeze(1), torch.from_numpy(y))
+    return DataLoader(ds, batch_size=BATCH_SIZE, shuffle=shuffle)
+ 
+train_loader = to_loader(X_train, y_train, shuffle=True)
+val_loader = to_loader(X_val, y_val, shuffle=False)
+test_loader = to_loader(X_test, y_test, shuffle=False)
+
+
+###  This is the place where class imbalance is being handled using an approach so called "Inverse Frequency" weights 
+# Inverse-frequency class weights: "none" alone is usually ~85% of the labeled data, so an unweighted loss would mostly just learn to predict
+# "none" every time and still look accurate.
+
+counts = np.bicount(y_train, minlenght = len(CLASSES).astype(np.float64))
+class_weights =torch.tensor(counts.sum() / (len(CLASSES) * counts), dtype = torch.float32 )
+print("\nclass weights:", {c: round(w, 2) for c, w in zip(CLASSES, class_weights.tolist())})
+
+
+
 
 
 
