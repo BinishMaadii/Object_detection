@@ -19,7 +19,7 @@ LEARNING_RATE = 1e-3
 SEED = 0
  
 CLASSES = ["Center", "Donut", "Edge-Loc", "Edge-Ring", "Loc",
-           "Near-full", "Random", "Scratch", "none"]
+           "Near-full", "Random", "Scratch", "none"]  ### here none means that they are not faulty. So no fault as given in the list is found. 
 CLASS_TO_IDX = {c: i for i, c in enumerate(CLASSES)}
  
 torch.manual_seed(SEED)
@@ -109,6 +109,45 @@ X = X / 2.0  # {0, 1, 2} -> {0, 0.5, 1}
 y = labeled["failureType"].map(CLASS_TO_IDX).to_numpy()
  
 print("X shape:", X.shape, " y shape:", y.shape)
+
+##### Data stratification 
+#### since y is the labeled data so the y is used to make splits
+
+idx = np.arrange(len(y))
+idx_train, idx_temp = train_test_split(idx, test_size=0.2, random_state = SEED, stratify = y)
+idx_val, idx_test = train_test_split(idx_temp, test_size= 0.2, random_state = SEED, startify= y[idx_temp])
+
+
+X_train, y_train = X[idx_train], y[idx_train]
+X_val, y_val = X[idx_val], y[idx_val]
+X_test, y_test = X[idx_test], y[idx_test]
+
+print(f"train: {len(y_train)}   val: {len(y_val)}   test: {len(y_test)}")
+
+
+
+##### Class imbalance handling with weights penalization
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
