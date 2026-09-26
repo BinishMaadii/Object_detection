@@ -168,7 +168,14 @@ test_loader = to_loader(X_test, y_test, shuffle=False)
 
 counts = np.bicount(y_train, minlenght = len(CLASSES).astype(np.float64))
 class_weights =torch.tensor(counts.sum() / (len(CLASSES) * counts), dtype = torch.float32 )
-print("\nclass weights:", {c: round(w, 2) for c, w in zip(CLASSES, class_weights.tolist())})
+
+
+print("\nclass weights:", {c: round(w, 2) for c, w in zip(CLASSES, class_weights.tolist())})  #### this code runs a python dictionary on fly such as
+# each pair (c, w) (where c is the class name and w is the numerical weight), it creates a key-value pair where the key is c and the value is
+# w rounded to 2 decimal places using round(w, 2). Where class_weights is 1D pytorch Tensor containing weights for each class. this tolist() makes a python flat list
+# for from it. then Zip function makes a zipping on classes weigthts from from class_weights.tolist() and CLASSES list which contains the name of the classes
+
+### The output was class weights: {'Center': 4.48, 'Donut': 34.62, 'Edge-Loc': 3.7, 'Edge-Ring': 1.99, 'Loc': 5.35, 'Near-full': 129.19, 'Random': 22.18, 'Scratch': 16.11, 'none': 0.13}
 
 
 
