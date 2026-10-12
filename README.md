@@ -1,6 +1,6 @@
 # Wafer Map Defect Classification on WM-811K
 
-A small CNN, trained from scratch in PyTorch, that reads a semiconductor wafer map and names its spatial defect pattern. The whole pipeline is one script (`wafer_map_pipeline.py`) that runs top to bottom.
+A small CNN, trained from scratch in PyTorch, that reads a semiconductor wafer map and names its spatial defect pattern. The whole pipeline is one script (`defect_detection.py`) that runs top to bottom.
 
 ## Summary
 
