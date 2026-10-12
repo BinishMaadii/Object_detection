@@ -1,14 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
 # =============================================================================
 # Wafer map defect classification on WM-811K
 # One file, run top to bottom:  python wafer_map_pipeline.py | tee run_log.txt
